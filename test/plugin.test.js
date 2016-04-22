@@ -15,7 +15,7 @@ QUnit.test('the environment is sane', function(assert) {
   assert.strictEqual(typeof plugin, 'function', 'plugin is a function');
 });
 
-QUnit.module('videojs-endcard', {
+QUnit.module('videojs-related', {
 
   beforeEach() {
 
@@ -41,18 +41,18 @@ QUnit.test('registers itself with video.js', function(assert) {
   assert.expect(2);
 
   assert.strictEqual(
-    Player.prototype.endcard,
+    Player.prototype.related,
     plugin,
-    'videojs-endcard plugin was registered'
+    'videojs-related plugin was registered'
   );
 
-  this.player.endcard();
+  this.player.related();
 
   // Tick the clock forward enough to trigger the player to be "ready".
   this.clock.tick(1);
 
   assert.ok(
-    this.player.hasClass('vjs-endcard'),
+    this.player.hasClass('vjs-related'),
     'the plugin adds a class to the player'
   );
 });

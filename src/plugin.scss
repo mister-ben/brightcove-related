@@ -1,9 +1,37 @@
-// Sass for videojs-endcard
+// Sass for videojs-related
 
 .video-js {
 
-  // This class is added to the video.js element by the plugin by default.
-  &.vjs-endcard {
-    
+  .vjs-related {
+    .vjs-poster {
+      background-position: initial;
+      display: block;
+      height: 40%;
+      position: relative;
+
+      &::before {
+        font-size: 4rem;
+        position: absolute;
+        text-align: center;
+        width: 45%;
+      }
+    }
+
+    .vjs-modal-dialog-content {
+      padding: 5%;
+    }
+
+    .vjs-playlist {
+      height: 40%;
+      top: 10%;
+    }
   }
+
+  &.vjs-related-showing {
+    .vjs-dock-text,
+    .vjs-dock-shelf {
+      display: none;
+    }
+  }
+
 }

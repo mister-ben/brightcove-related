@@ -2,25 +2,42 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>videojs-endcard Demo</title>
-  <link href="/node_modules/video.js/dist/video-js.css" rel="stylesheet">
-  <link href="/dist/videojs-endcard.css" rel="stylesheet">
+  <title>videojs-related Demo</title>
+  <!--<link href="/node_modules/video.js/dist/video-js.css" rel="stylesheet">-->
+  <link href="/dist/videojs-related.css" rel="stylesheet">
 </head>
 <body>
-  <video id="videojs-endcard-player" class="video-js vjs-default-skin" controls>
+  <!--<video id="videojs-related-player" class="video-js vjs-default-skin" controls>
     <source src="//vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
     <source src="//vjs.zencdn.net/v/oceans.webm" type='video/webm'>
-  </video>
+  </video>-->
+  <video data-video-id="4856466106001"
+    data-account="906043040001"
+    data-player="default"
+    data-embed="default"
+    class="video-js vjs-16-9"
+    id="videojs-related-player" style="width: 640px"
+    controls></video>
+
   <ul>
     <li><a href="/test/">Run unit tests in browser.</a></li>
     <li><a href="/docs/api/">Read generated docs.</a></li>
   </ul>
-  <script src="/node_modules/video.js/dist/video.js"></script>
-  <script src="/dist/videojs-endcard.js"></script>
+  <!--<script src="/node_modules/video.js/dist/video.js"></script>-->
+  <script src="//players.brightcove.net/906043040001/default_default/index.min.js"></script>
+  <script src="/dist/videojs-related.js"></script>
   <script>
     (function(window, videojs) {
-      var player = window.player = videojs('videojs-endcard-player');
-      player.endcard();
+      var player = window.player = videojs('videojs-related-player');
+      /*player.mediainfo = {
+        id: '4615647507001'
+      }*/
+      player.related({});
+      /*player.one('playing', function() {
+        this.currentTime(this.duration() - 5);
+      }).one('loadedmetadata', function() {
+        this.play();
+      });*/
     }(window, window.videojs));
   </script>
 </body>

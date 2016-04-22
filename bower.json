@@ -1,10 +1,10 @@
 {
-  "name": "videojs-endcard",
+  "name": "videojs-related",
   "author": "mister-ben &lt;git@misterben.me&gt;",
   "license": "Apache-2.0",
   "main": [
-    "dist/videojs-endcard.css",
-    "dist/videojs-endcard.min.js"
+    "dist/videojs-related.css",
+    "dist/videojs-related.min.js"
   ],
   "keywords": [
     "videojs",

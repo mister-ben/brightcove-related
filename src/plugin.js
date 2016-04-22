@@ -1,10 +1,13 @@
 import videojs from 'video.js';
-import EndCardModal from './endcard-modal';
-import playlist from 'videojs-playlist';
+import RelatedModal from './related-modal';
 import {catalogPlaylist, mapiRelatedPlaylist} from './playlist-builder.js';
 
 // Default options for the plugin.
-const defaults = {};
+const defaults = {
+  token: '4padFp2KtFo3R8px9Gy8ugjQ1Pedl6fqsdp71_6Z9b6YOmzse5_G5g..',
+  limit: 8,
+  debug: true
+};
 
 /**
  * Function to invoke when the player is ready.
@@ -18,26 +21,40 @@ const defaults = {};
  * @param    {Object} [options={}]
  */
 const onPlayerReady = (player, options) => {
-  player.addClass('vjs-endcard');
 
-  let modal = new EndCardModal(player, {
-    fillAlways: true,
+  // Set up modal - more customisation to do here
+  let modal = new RelatedModal(player, {
     label: player.localize('End card with related videos'),
     content: player.localize('This is content'),
     temporary: false,
     uncloseable: false
   });
   
-  mapiRelatedPlaylist({videoid: '3825749346001', token: '4padFp2KtFo3R8px9Gy8ugjQ1Pedl6fqsdp71_6Z9b6YOmzse5_G5g..', debug: true}, function(e,d) {
-    if(e) {
-      console.error(e);
-    } else if (player.mediainfo) {
-      d.shift(player.mediainfo);
+  const playlist = (object) => {
+    console.info(object);
+  }
+  
+  // Get related videos from Media api
+  // TODO: feed in options
+  player.on('loadedmetadata', () => {
+    if (player.mediainfo && player.mediainfo.id && videoid !== player.mediainfo.id) {
+      let videoid = player.mediainfo.id;
+      mapiRelatedPlaylist({
+        videoid: videoid,
+        token: options.token,
+        debug: options.debug,
+        limit: options.limit
+      }, function(e,d) {
+        if(e) {
+          console.error(e);
+        } else {
+          playlist(d);
+        }
+      });
     }
-    player.playlist(d);
   });
 
-player.customEndscreenModal = modal;
+player.relatedModal = modal;
 
 player.addChild(modal);
 };
@@ -50,21 +67,20 @@ player.addChild(modal);
  * depending on how the plugin is invoked. This may or may not be important
  * to you; if not, remove the wait for "ready"!
  *
- * @function endcard
+ * @function related
  * @param    {Object} [options={}]
  *           An object of options left to the plugin author to define.
  */
-const endcard = function(options) {
-  playlist.call(this);
+const related = function(options) {
   this.ready(() => {
     onPlayerReady(this, videojs.mergeOptions(defaults, options));
   });
 };
 
 // Register the plugin with video.js.
-videojs.plugin('endcard', endcard);
+videojs.plugin('related', related);
 
 // Include the version number.
-endcard.VERSION = '__VERSION__';
+related.VERSION = '__VERSION__';
 
-export default endcard;
+export default related;

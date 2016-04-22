@@ -4,7 +4,7 @@
  * @param {String} url - HTTP URL
  * @returns {String} - Equivalent HTTPS URL
  */
-const secureUrl = function(url) {
+const secureUrl = (url) => {
   const domains = {
     'http://c.brightcove.com': 'https://secure.brightcove.com',
     'http://brightcove04.brightcove.com': 'https://bcsecure04-a.akamaihd.net',
