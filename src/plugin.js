@@ -27,20 +27,25 @@ const onPlayerReady = (player, options) => {
     label: player.localize('End card with related videos'),
     content: player.localize('This is content'),
     temporary: false,
-    uncloseable: false
+    uncloseable: true
   });
   
   const playlist = (object) => {
     console.info(object);
   }
   
+  // Keep track of video id as source of truth about content change
+  let currentVideoId;
+  
   // Get related videos from Media api
   // TODO: feed in options
   player.on('loadedmetadata', () => {
-    if (player.mediainfo && player.mediainfo.id && videoid !== player.mediainfo.id) {
-      let videoid = player.mediainfo.id;
+    if (player.mediainfo &&
+        player.mediainfo.id &&
+        currentVideoId !== player.mediainfo.id) {
+      currentVideoId = player.mediainfo.id;
       mapiRelatedPlaylist({
-        videoid: videoid,
+        videoid: currentVideoId,
         token: options.token,
         debug: options.debug,
         limit: options.limit
@@ -48,7 +53,7 @@ const onPlayerReady = (player, options) => {
         if(e) {
           console.error(e);
         } else {
-          playlist(d);
+          modal.fill(d);
         }
       });
     }

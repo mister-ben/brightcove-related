@@ -1,5 +1,6 @@
 import document from 'global/document';
 import videojs from 'video.js';
+import RelatedList from './related-list.js';
 
 const ModalDialog = videojs.getComponent('ModalDialog');
 const PosterImage = videojs.getComponent('PosterImage');
@@ -22,16 +23,19 @@ class RelatedModal extends ModalDialog {
     const modal = this;
     this.on(player, 'ended', this.open);
     this.replayPoster = new PosterImage(player, {});
+    this.relatedList = new RelatedList(player, {});
     this.replayPoster.addClass('vjs-icon-replay');
+    this.contentEl_.appendChild(this.relatedList.el_);
     this.contentEl_.appendChild(this.replayPoster.el_);
     player.on(['loadstart','play'], function() {
       modal.close();
     });
   }
 
-  // Just don't fill for now
-  fill() {
-    //return
+  fill(list) {
+    if(list) {
+      this.relatedList.update(list);
+    }
   }
   
   open() {
@@ -39,10 +43,11 @@ class RelatedModal extends ModalDialog {
     super.open();
   }
 
-  close() {
+  /*close() {
     player.removeClass('vjs-related-showing');
+    console.log(super, super.close);
     super.close();
-  }
+  }*/
 
   /**
    * Build the modal's CSS class.
@@ -51,7 +56,7 @@ class RelatedModal extends ModalDialog {
    * @return {String}
    */
   buildCSSClass() {
-    return `vjs-related ${super.buildCSSClass()}`;
+    return `vjs-related related-toptail ${super.buildCSSClass()}`;
   }
 
 }

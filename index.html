@@ -5,18 +5,25 @@
   <title>videojs-related Demo</title>
   <!--<link href="/node_modules/video.js/dist/video-js.css" rel="stylesheet">-->
   <link href="/dist/videojs-related.css" rel="stylesheet">
+  <style>
+  .video-js {
+    width: 640px;
+    height: 360px;
+  }
+  </style>
 </head>
 <body>
   <!--<video id="videojs-related-player" class="video-js vjs-default-skin" controls>
     <source src="//vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
     <source src="//vjs.zencdn.net/v/oceans.webm" type='video/webm'>
   </video>-->
+  
   <video data-video-id="4856466106001"
     data-account="906043040001"
     data-player="default"
     data-embed="default"
-    class="video-js vjs-16-9"
-    id="videojs-related-player" style="width: 640px"
+    class="video-js"
+    id="videojs-related-player"
     controls></video>
 
   <ul>
@@ -38,6 +45,9 @@
       }).one('loadedmetadata', function() {
         this.play();
       });*/
+      /*setTimeout(function () {
+        player.relatedModal.show();
+      }, 10);*/
     }(window, window.videojs));
   </script>
 </body>

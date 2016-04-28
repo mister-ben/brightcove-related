@@ -1,0 +1,186 @@
+$white: #fff;
+$black: #000;
+
+@mixin hover() {
+  box-shadow: inset 0 0 5em 1em $black;
+}
+
+@mixin text() {
+  color: $white;
+  text-shadow: 0 0 5px $black;
+}
+
+.vjs-related.related-toptail {
+  .vjs-related-list {
+    display: table;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    width: 100%;
+    @include text();
+
+    li {
+      background-size: cover;
+      cursor: pointer;
+      display: block;
+      height: 33.3333%;
+      overflow: hidden;
+      position: absolute;
+      width: 33.3333%;
+
+      &:hover {
+        @include hover();
+
+        cite {
+          visibility: hidden;
+        }
+
+        cite::after {
+          content: '\f101';
+          font-family: 'VideoJS';
+          font-size: 200%;
+          left: 50%;
+          position: absolute;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          visibility: visible;
+        }
+      }
+
+      cite {
+        display: block;
+        font-style: normal;
+        position: relative;
+        text-align: center;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      p {
+        display: none;
+      }
+      
+      &:nth-child(2),
+      &:nth-child(5) {
+        left: 33.3333%;
+      }
+
+      &:nth-child(3),
+      &:nth-child(6) {
+        left: 66.6666%;
+      }
+
+      &:nth-child(4),
+      &:nth-child(5),
+      &:nth-child(6) {
+        bottom: 0;
+      }
+
+      &:nth-child(n+7) {
+        display: none;
+      }
+    }
+
+  }
+  
+  .vjs-upnext-replay {
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 33.3333%;
+    min-height: 33.3333%;
+    top: 33.333%;
+    color: $white;
+    text-shadow: 0 0 5px $black;
+    cursor: pointer;
+  }
+  img {
+    display: none;
+  }
+  .vjs-upnext-replay a {
+    &::before {
+      display: inline-block;
+      font-family: bc-custom-end-icons;
+      content: '\e801';
+      font-size: 5em;
+      margin: auto 20px;
+    }
+    display: inline-block;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .vjs-upnext-list a:hover {
+    color: #eee;
+    text-decoration: none;
+  }
+  .vjs-upnext-replay {
+    a:hover {
+      color: #eee;
+      text-decoration: none;
+    }
+    h4 {
+      font-size: 200%;
+    }
+    opacity: 0;
+    transition: opacity 0.5s ease-in;
+    pointer-events: none;
+  }
+  .vjs-upnext-list {
+    opacity: 0;
+    transition: opacity 0.5s ease-in;
+    pointer-events: none;
+  }
+  
+  
+  .vjs-poster {
+    background-position: initial;
+    background-size: cover;
+    cursor: pointer;
+    display: block;
+    height: 33.3333%;
+    position: absolute;
+    top: 33.3333%;
+    width: 33.3333%;
+    @include text();
+
+    &::before {
+      font-size: 200%;
+      left: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    &:hover {
+      @include hover();
+    }
+  }
+}
+
+
+
+/* TODO remove? */
+&.upnext-former {
+  .vjs-upnext-list,
+  .vjs-upnext-replay {
+    opacity: 0;
+    transition: opacity 0.5s ease-in;
+    pointer-events: none;
+  }
+}
+&.upnext-toptail.vjs-ended {
+  .vjs-upnext-list,
+  .vjs-upnext-replay {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+&.upnext-former.vjs-ended {
+  .vjs-upnext-list,
+  .vjs-upnext-replay {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}

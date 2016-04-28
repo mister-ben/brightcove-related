@@ -3,28 +3,10 @@
 .video-js {
 
   .vjs-related {
-    .vjs-poster {
-      background-position: initial;
-      display: block;
-      height: 40%;
-      position: relative;
-
-      &::before {
-        font-size: 4rem;
-        position: absolute;
-        text-align: center;
-        width: 45%;
-      }
-    }
-
     .vjs-modal-dialog-content {
-      padding: 5%;
+      padding: 0;
     }
 
-    .vjs-playlist {
-      height: 40%;
-      top: 10%;
-    }
   }
 
   &.vjs-related-showing {
@@ -35,3 +17,6 @@
   }
 
 }
+
+@import "toptail";
+
