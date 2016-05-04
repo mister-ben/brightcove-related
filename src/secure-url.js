@@ -12,7 +12,7 @@ const secureUrl = (url) => {
     'http://brightcove.vo.llnwd.net': 'https://brightcove.hs.llnwd.net'
   };
   if (url && url.startsWith('http://')) {
-    for (var prop in domains) {
+    for (let prop in domains) {
       if (url.startsWith(prop)) {
         return url.replace(prop, domains[prop]);
       }
