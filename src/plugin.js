@@ -25,7 +25,7 @@ const onPlayerReady = (player, options) => {
     options: () => {
       return options;
     }
-  }
+  };
 
   // Set up modal - more customisation to do here
   let modal = new RelatedModal(player, {
@@ -34,16 +34,11 @@ const onPlayerReady = (player, options) => {
     temporary: false,
     uncloseable: true
   });
-  
-  const playlist = (object) => {
-    console.info(object);
-  }
-  
+  let getEndscreenData;
   // Keep track of video id as source of truth about content change
   let currentVideoId;
-  
+
   // Get related videos from Media api
-  // TODO: feed in options
   player.on('loadedmetadata', () => {
     if (player.mediainfo &&
         player.mediainfo.id &&
@@ -52,44 +47,43 @@ const onPlayerReady = (player, options) => {
       getEndscreenData();
     }
   });
-  
-  const getEndscreenData = () => {
+
+  getEndscreenData = () => {
     switch (options.source) {
-      case 'related':
-        if (options.token) {
-          mapiRelatedVideos({
-            videoid: currentVideoId,
-            token: options.token,
-            debug: options.debug,
-            limit: options.limit,
-            japan: options.japan
-          }, (error, data) => {
-            if(error) {
-              console.error(error);
-            } else {
-              modal.fill(data);
-            }
-          });
-        } else if (options.debug) {
-          videojs.warn('No token');
-        }
-        break;
-      case 'playlist':
-        if (options.playlistId) {
-          player.getPlaylist(options.playlistId, (error, data) => {
-            if(error) {
-              console.error(error);
-            } else {
-              modal.fill(data);
-            }
-          });
-        } else if (options.debug) {
-          videojs.warn('No playlist supplied');
-        }
-         break;
+    case 'related':
+      if (options.token) {
+        mapiRelatedVideos({
+          videoid: currentVideoId,
+          token: options.token,
+          debug: options.debug,
+          limit: options.limit,
+          japan: options.japan
+        }, (error, data) => {
+          if (error) {
+            videojs.warn(error);
+          } else {
+            modal.fill(data);
+          }
+        });
+      } else if (options.debug) {
+        videojs.warn('No token');
+      }
+      break;
+    case 'playlist':
+      if (options.playlistId) {
+        player.getPlaylist(options.playlistId, (error, data) => {
+          if (error) {
+            videojs.warn(error);
+          } else {
+            modal.fill(data);
+          }
+        });
+      } else if (options.debug) {
+        videojs.warn('No playlist supplied');
+      }
+      break;
     }
-    
-  }
+  };
 
   player.relatedModal = modal;
 
@@ -113,12 +107,19 @@ const onPlayerReady = (player, options) => {
  *
  * @function related
  * @param    {Object} options
- * @param    {String} options.source - `related` | `playlist` (`search` to be implemented)
- * @param    {String} [options.token] - Media API token to be used if source === related
- * @param    {String} [options.japan] - If true, Brightcove KK Media API endpoint is used
- * @param    {Object} options.link - If false, unset or link discovery fails, load video in player.
- * @param    {String} options.link.field - If set, use this video field to specify link. Could be `link.url` or `custom_fields.my_field`
- * @param    {String} options.link.pattern - NOT IMPLEMENTED - URL pattern with macros
+ * @param    {String} options.source
+ *              - `related` | `playlist` (`search` to be implemented)
+ * @param    {String} [options.token]
+ *              - Media API token to be used if source === related
+ * @param    {String} [options.japan]
+ *              - If true, Brightcove KK Media API endpoint is used
+ * @param    {Object} options.link
+ *              - If false, unset or link discovery fails, load video in player.
+ * @param    {String} options.link.field
+ *              - If set, use this video field to specify link.
+ *                Could be `link.url` or `custom_fields.my_field`
+ * @param    {String} options.link.pattern
+ *              - NOT IMPLEMENTED - URL pattern with macros
  */
 const related = function(options) {
   this.ready(() => {

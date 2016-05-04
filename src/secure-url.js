@@ -11,6 +11,7 @@ const secureUrl = (url) => {
     'http://brightcove01.brightcove.com': 'https://bcsecure01-a.akamaihd.net',
     'http://brightcove.vo.llnwd.net': 'https://brightcove.hs.llnwd.net'
   };
+
   if (url && url.startsWith('http://')) {
     for (let prop in domains) {
       if (url.startsWith(prop)) {
@@ -19,6 +20,6 @@ const secureUrl = (url) => {
     }
   }
   return null;
-}
+};
 
 export default secureUrl;

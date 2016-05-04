@@ -1,30 +1,32 @@
 import secureUrl from './secure-url.js';
 
 /**
- * Converts a video or playlist from the Media API format for the Brightcove Player.
+ * Returns an HLS source object
  * @constructor
- * @param {Object|Array} data - Media API video or array of videos
- * @param {Boolean} includeZeroSrc - Whether videos with no (convertible) sources should be returned.
- * @returns {Object|Array} - Player API formatted video or array of videos
+ * @param {String} url - HLS source URL
+ * @returns {Object} - Player API formatted HLS source
  */
-const formatMapi = function (data, includeZeroSrc = false) {
-  if (Array.isArray(data)) {
-    let playlist = [];
-    for (let i = 0; i < data.length; i++) {
-      let video = getVideo(data[i]);
-      if (video.sources.length > 0 || includeZeroSrc) {
-        playlist.push(video);
-      }
-    }
-    return playlist;
-  } else {
-    let video = getVideo(data);
-    if (video.sources.length > 0 || includeZeroSrc) {
-      return video;
-    }
-  }
-  return null;
-}
+const hlsSource = function(url) {
+  return {
+    codec: 'H264',
+    container: 'M2TS',
+    src: url,
+    type: 'application/vnd.apple.mpegurl'
+  };
+};
+
+/**
+ * Returns an MPEG-DASH source object
+ * @constructor
+ * @param {String} url - DASH source URL
+ * @returns {Object} - Player API formatted DASH source
+ */
+const dashSource = function(url) {
+  return {
+    src: url,
+    type: 'application/dash+xml'
+  };
+};
 
 /**
  * Converts a video from the Media API format for the Brightcove Player.
@@ -32,7 +34,7 @@ const formatMapi = function (data, includeZeroSrc = false) {
  * @param {Object} data - Media API video
  * @returns {Object} - Player API formatted video
  */
-const getVideo = function (mapiVideo) {
+const getVideo = function(mapiVideo) {
   const propsMap = {
     name: 'name',
     id: 'id',
@@ -48,22 +50,23 @@ const getVideo = function (mapiVideo) {
     length: 'duration'
   };
   let video = {};
+
   for (let prop in propsMap) {
     if (mapiVideo[prop]) {
       video[propsMap[prop]] = mapiVideo[prop];
     }
   }
   video.poster = secureUrl(mapiVideo.videoStillURL) || mapiVideo.videoStillURL;
-  if(mapiVideo.videoStillURL) {
+  if (mapiVideo.videoStillURL) {
     video.posterSources = [{
       src: mapiVideo.videoStillURL
     }];
   }
   video.link = {};
-  if(mapiVideo.linkText) {
+  if (mapiVideo.linkText) {
     video.link.text = mapiVideo.linkText;
   }
-  if(mapiVideo.linkURL) {
+  if (mapiVideo.linkURL) {
     video.link.url = mapiVideo.linkURL;
   }
   video.sources = [];
@@ -90,15 +93,16 @@ const getVideo = function (mapiVideo) {
     for (let i = 0; i < mapiVideo.renditions.length; i++) {
       let source = {};
       const rendition = mapiVideo.renditions[i];
-      const propsMap = {
+      const renditionFields = {
         encodingRate: 'avg_bitrate',
         frameHeight: 'height',
         frameWidth: 'width',
         videoCodec: 'codec',
         videoContainer: 'container'
       };
-      for (let prop in propsMap) {
-        source[propsMap[prop]] = rendition[prop];
+
+      for (let prop in renditionFields) {
+        source[renditionFields[prop]] = rendition[prop];
       }
       if (rendition.videoCodec === 'MP4') {
         source.type = 'video/mp4';
@@ -106,6 +110,7 @@ const getVideo = function (mapiVideo) {
       if (rendition.url) {
         if (secureUrl(rendition.url)) {
           let secureSource = Object.assign({}, source);
+
           secureSource.src = secureUrl(rendition.url);
           video.sources.push(secureSource);
         }
@@ -115,34 +120,35 @@ const getVideo = function (mapiVideo) {
     }
   }
   return video;
-}
+};
 
 /**
- * Returns an HLS source object
+ * Converts a video or playlist from the Media API format for the Brightcove Player.
  * @constructor
- * @param {String} url - HLS source URL
- * @returns {Object} - Player API formatted HLS source
+ * @param {Object|Array} data - Media API video or array of videos
+ * @param {Boolean} includeZeroSrc - Whether videos with no (convertible) sources
+ * should be returned.
+ * @returns {Object|Array} - Player API formatted video or array of videos
  */
-const hlsSource = function(url) {
-  return {
-    codec: 'H264',
-    container: 'M2TS',
-    src: url,
-    type: 'application/vnd.apple.mpegurl'
-  }
-}
+const formatMapi = function(data, includeZeroSrc = false) {
+  if (Array.isArray(data)) {
+    let playlist = [];
 
-/**
- * Returns an MPEG-DASH source object
- * @constructor
- * @param {String} url - DASH source URL
- * @returns {Object} - Player API formatted DASH source
- */
-const dashSource = function(url) {
-  return {
-    src: url,
-    type: 'application/dash+xml'
+    for (let i = 0; i < data.length; i++) {
+      let video = getVideo(data[i]);
+
+      if (video.sources.length > 0 || includeZeroSrc) {
+        playlist.push(video);
+      }
+    }
+    return playlist;
   }
-}
+  let video = getVideo(data);
+
+  if (video.sources.length > 0 || includeZeroSrc) {
+    return video;
+  }
+  return null;
+};
 
 export default formatMapi;
