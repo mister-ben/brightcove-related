@@ -38,7 +38,7 @@ QUnit.module('videojs-related', {
 });
 
 QUnit.test('registers itself with video.js', function(assert) {
-  assert.expect(2);
+  assert.expect(1);
 
   assert.strictEqual(
     Player.prototype.related,
@@ -47,12 +47,4 @@ QUnit.test('registers itself with video.js', function(assert) {
   );
 
   this.player.related();
-
-  // Tick the clock forward enough to trigger the player to be "ready".
-  this.clock.tick(1);
-
-  assert.ok(
-    this.player.hasClass('vjs-related'),
-    'the plugin adds a class to the player'
-  );
 });
