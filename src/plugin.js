@@ -1,10 +1,9 @@
 import videojs from 'video.js';
 import RelatedModal from './related-modal';
-import {catalogPlaylist, mapiRelatedPlaylist} from './playlist-builder.js';
+import mapiRelatedVideos from './playlist-builder.js';
 
 // Default options for the plugin.
 const defaults = {
-  token: '4padFp2KtFo3R8px9Gy8ugjQ1Pedl6fqsdp71_6Z9b6YOmzse5_G5g..',
   limit: 8,
   debug: true
 };
@@ -21,6 +20,12 @@ const defaults = {
  * @param    {Object} [options={}]
  */
 const onPlayerReady = (player, options) => {
+
+  player.related = {
+    options: () => {
+      return options;
+    }
+  }
 
   // Set up modal - more customisation to do here
   let modal = new RelatedModal(player, {
@@ -44,24 +49,58 @@ const onPlayerReady = (player, options) => {
         player.mediainfo.id &&
         currentVideoId !== player.mediainfo.id) {
       currentVideoId = player.mediainfo.id;
-      mapiRelatedPlaylist({
-        videoid: currentVideoId,
-        token: options.token,
-        debug: options.debug,
-        limit: options.limit
-      }, function(e,d) {
-        if(e) {
-          console.error(e);
-        } else {
-          modal.fill(d);
-        }
-      });
+      getEndscreenData();
     }
   });
+  
+  const getEndscreenData = () => {
+    switch (options.source) {
+      case 'related':
+        if (options.token) {
+          mapiRelatedVideos({
+            videoid: currentVideoId,
+            token: options.token,
+            debug: options.debug,
+            limit: options.limit,
+            japan: options.japan
+          }, (error, data) => {
+            if(error) {
+              console.error(error);
+            } else {
+              modal.fill(data);
+            }
+          });
+        } else if (options.debug) {
+          videojs.warn('No token');
+        }
+        break;
+      case 'playlist':
+        if (options.playlistId) {
+          player.getPlaylist(options.playlistId, (error, data) => {
+            if(error) {
+              console.error(error);
+            } else {
+              modal.fill(data);
+            }
+          });
+        } else if (options.debug) {
+          videojs.warn('No playlist supplied');
+        }
+         break;
+    }
+    
+  }
 
-player.relatedModal = modal;
+  player.relatedModal = modal;
 
-player.addChild(modal);
+  player.addChild(modal);
+
+  // iOS fullscreen doesn't show modal
+  if (videojs.browser.IS_IOS) {
+    player.on('ended', () => {
+      player.exitFullscreen();
+    });
+  }
 };
 
 /**
@@ -73,8 +112,13 @@ player.addChild(modal);
  * to you; if not, remove the wait for "ready"!
  *
  * @function related
- * @param    {Object} [options={}]
- *           An object of options left to the plugin author to define.
+ * @param    {Object} options
+ * @param    {String} options.source - `related` | `playlist` (`search` to be implemented)
+ * @param    {String} [options.token] - Media API token to be used if source === related
+ * @param    {String} [options.japan] - If true, Brightcove KK Media API endpoint is used
+ * @param    {Object} options.link - If false, unset or link discovery fails, load video in player.
+ * @param    {String} options.link.field - If set, use this video field to specify link. Could be `link.url` or `custom_fields.my_field`
+ * @param    {String} options.link.pattern - NOT IMPLEMENTED - URL pattern with macros
  */
 const related = function(options) {
   this.ready(() => {

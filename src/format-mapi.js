@@ -45,7 +45,7 @@ const getVideo = function (mapiVideo) {
     longDescription: 'long_description',
     tags: 'tags',
     economics: 'economics',
-    duration: 'duration'
+    length: 'duration'
   };
   let video = {};
   for (let prop in propsMap) {
@@ -53,6 +53,7 @@ const getVideo = function (mapiVideo) {
       video[propsMap[prop]] = mapiVideo[prop];
     }
   }
+  video.poster = secureUrl(mapiVideo.videoStillURL) || mapiVideo.videoStillURL;
   if(mapiVideo.videoStillURL) {
     video.posterSources = [{
       src: mapiVideo.videoStillURL
@@ -85,30 +86,32 @@ const getVideo = function (mapiVideo) {
     }
     video.sources.push(hlsSource(mapiVideo.FLVURL));
   }
-  for (let i = 0; i < mapiVideo.renditions.length; i++) {
-    let source = {};
-    const rendition = mapiVideo.renditions[i];
-    const propsMap = {
-      encodingRate: 'avg_bitrate',
-      frameHeight: 'height',
-      frameWidth: 'width',
-      videoCodec: 'codec',
-      videoContainer: 'container'
-    };
-    for (let prop in propsMap) {
-      source[propsMap[prop]] = rendition[prop];
-    }
-    if (rendition.videoCodec === 'MP4') {
-      source.type = 'video/mp4';
-    }
-    if (rendition.url) {
-      if (secureUrl(rendition.url)) {
-        let secureSource = Object.assign({}, source);
-        secureSource.src = secureUrl(rendition.url);
-        video.sources.push(secureSource);
+  if (mapiVideo.renditions) {
+    for (let i = 0; i < mapiVideo.renditions.length; i++) {
+      let source = {};
+      const rendition = mapiVideo.renditions[i];
+      const propsMap = {
+        encodingRate: 'avg_bitrate',
+        frameHeight: 'height',
+        frameWidth: 'width',
+        videoCodec: 'codec',
+        videoContainer: 'container'
+      };
+      for (let prop in propsMap) {
+        source[propsMap[prop]] = rendition[prop];
       }
-      source.src = rendition.url;
-      video.sources.push(source);
+      if (rendition.videoCodec === 'MP4') {
+        source.type = 'video/mp4';
+      }
+      if (rendition.url) {
+        if (secureUrl(rendition.url)) {
+          let secureSource = Object.assign({}, source);
+          secureSource.src = secureUrl(rendition.url);
+          video.sources.push(secureSource);
+        }
+        source.src = rendition.url;
+        video.sources.push(source);
+      }
     }
   }
   return video;

@@ -13,11 +13,7 @@
   </style>
 </head>
 <body>
-  <!--<video id="videojs-related-player" class="video-js vjs-default-skin" controls>
-    <source src="//vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
-    <source src="//vjs.zencdn.net/v/oceans.webm" type='video/webm'>
-  </video>-->
-  
+
   <video data-video-id="4856466106001"
     data-account="906043040001"
     data-player="default"
@@ -35,19 +31,14 @@
   <script src="/dist/videojs-related.js"></script>
   <script>
     (function(window, videojs) {
-      var player = window.player = videojs('videojs-related-player');
-      /*player.mediainfo = {
-        id: '4615647507001'
-      }*/
-      player.related({});
-      /*player.one('playing', function() {
-        this.currentTime(this.duration() - 5);
-      }).one('loadedmetadata', function() {
-        this.play();
-      });*/
-      /*setTimeout(function () {
-        player.relatedModal.show();
-      }, 10);*/
+      var xplayer = window.player = videojs('videojs-related-player');
+      xplayer.related({
+        source: 'related',
+        token: '4padFp2KtFo3R8px9Gy8ugjQ1Pedl6fqsdp71_6Z9b6YOmzse5_G5g..',
+        link: {
+          field: 'link.url'
+        }
+      });
     }(window, window.videojs));
   </script>
 </body>

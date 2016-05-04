@@ -17,6 +17,8 @@ class RelatedModal extends ModalDialog {
    * @method constructor
    * @param  {Player} player
    * @param  {Object} [options]
+   * @param  {Number} [options.smallCount] - number of items at which the `related-small` class is added
+   * @param  {Number} [options.smallWidth] - player width at which the `related-small` class is added
    */
   constructor(player, options) {
     super(player, options);
@@ -27,6 +29,8 @@ class RelatedModal extends ModalDialog {
     this.replayPoster.addClass('vjs-icon-replay');
     this.contentEl_.appendChild(this.relatedList.el_);
     this.contentEl_.appendChild(this.replayPoster.el_);
+    this.smallCount = options.smallCount || 8;
+    this.smallWidth = options.smallWidth || 480;
     player.on(['loadstart','play'], function() {
       modal.close();
     });
@@ -37,17 +41,21 @@ class RelatedModal extends ModalDialog {
       this.relatedList.update(list);
     }
   }
-  
+
   open() {
-    player.addClass('vjs-related-showing');
+    if ((this.relatedList.items.length < this.smallCount) || (this.player_.currentWidth() < this.smallWidth)) {
+      this.addClass('related-small');
+    } else {
+      this.removeClass('related-small');
+    }
+    this.player_.addClass('vjs-related-showing');
     super.open();
   }
 
-  /*close() {
-    player.removeClass('vjs-related-showing');
-    console.log(super, super.close);
+  close() {
     super.close();
-  }*/
+    this.player_.removeClass('vjs-related-showing');
+  }
 
   /**
    * Build the modal's CSS class.
@@ -56,7 +64,7 @@ class RelatedModal extends ModalDialog {
    * @return {String}
    */
   buildCSSClass() {
-    return `vjs-related related-toptail ${super.buildCSSClass()}`;
+    return `vjs-related related-wall ${super.buildCSSClass()}`;
   }
 
 }

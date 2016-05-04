@@ -78,6 +78,7 @@
   "dependencies": {
     "es6-promise": "^3.1.2",
     "fetch-jsonp": "^1.0.0",
+    "fetch-polyfill": "^0.8.2",
     "video.js": "^5.6.0"
   },
   "devDependencies": {
