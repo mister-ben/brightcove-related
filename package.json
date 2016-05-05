@@ -6,7 +6,7 @@
   "scripts": {
     "prebuild": "npm run clean",
     "build": "npm-run-all -p build:*",
-    "build:css": "npm-run-all build:css:sass build:css:bannerize",
+    "build:css": "npm-run-all build:css:sass",
     "build:css:bannerize": "bannerize dist/videojs-related.css --banner=scripts/banner.ejs",
     "build:css:sass": "node-sass src/plugin.scss dist/videojs-related.css --output-style=compressed --linefeed=lf",
     "build:js": "npm-run-all build:js:babel build:js:browserify build:js:bannerize build:js:uglify",
@@ -80,7 +80,8 @@
     "fetch-jsonp": "^1.0.0",
     "fetch-polyfill": "^0.8.2",
     "tsml": "^1.0.1",
-    "video.js": "^5.6.0"
+    "video.js": "^5.6.0",
+    "whatwg-fetch": "^0.11.1"
   },
   "devDependencies": {
     "babel": "^5.8.35",

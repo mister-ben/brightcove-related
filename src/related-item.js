@@ -63,7 +63,7 @@ class RelatedItem extends ClickableComponent {
     // Fetch from playlist API if there are no sources to play
     this.player_.catalog.getVideo(this.item_.id, (error, video) => {
       if (error) {
-        videojs.warn(error);
+        videojs.log.warn(error);
       }
       if (video) {
         this.player_.catalog.load(video);
