@@ -1,6 +1,6 @@
 {
   "name": "videojs-related",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "card for related videos",
   "main": "es5/plugin.js",
   "scripts": {
