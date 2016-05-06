@@ -27,7 +27,8 @@ const onPlayerReady = (player, options) => {
   player.related = {
     options: () => {
       return options;
-    }
+    },
+    VERSION: '__VERSION__'
   };
 
   // Set up modal - more customisation to do here

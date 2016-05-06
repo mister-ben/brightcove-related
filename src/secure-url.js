@@ -1,9 +1,6 @@
-if (!String.prototype.startsWith) {
-    String.prototype.startsWith = function(searchString, position){
-      position = position || 0;
-      return this.substr(position, searchString.length) === searchString;
-  };
-}
+const startsWith = (string, searchString, position = 0) => {
+  return string.substr(position, searchString.length) === searchString;
+};
 
 /**
  * Returns the HTTPS equivalent for an HTTP Brightcove CDN URL
@@ -19,9 +16,9 @@ const secureUrl = (url) => {
     'http://brightcove.vo.llnwd.net': 'https://brightcove.hs.llnwd.net'
   };
 
-  if (url && url.startsWith('http://')) {
+  if (url && startsWith(url, 'http://')) {
     for (let prop in domains) {
-      if (url.startsWith(prop)) {
+      if (startsWith(url, prop)) {
         return url.replace(prop, domains[prop]);
       }
     }
