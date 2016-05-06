@@ -3,16 +3,9 @@ import formatMapi from './format-mapi.js';
 import tsml from 'tsml';
 
 const mapiRelatedVideos = (options, cb) => {
-  const fields = [
-    'name',
-    'id',
-    'customFields',
-    'linkURL',
-    'shortDescription',
-    'referenceId',
-    'videoStillURL',
-    'length'
-  ].join();
+  const fields = tsml`
+    name,id,linkURL,shortDescription,referenceId,
+    videoStillURL,length,tags,customFields`;
   const domain = (options.japan ? 'api.brightcove.co.jp' : 'api.brightcove.com');
   const url = tsml `https://${domain}/services/library
     ?command=find_related_videos&video_id=${options.videoid}

@@ -1,5 +1,6 @@
 import document from 'global/document';
 import videojs from 'video.js';
+import replaceUrlMacros from './replace-url-macros.js';
 
 const ClickableComponent = videojs.getComponent('ClickableComponent');
 
@@ -43,10 +44,11 @@ class RelatedItem extends ClickableComponent {
   }
 
   handleClick() {
-    // Get redirect URL from field
-    if (this.player_.related.options().link) {
-      if (this.player_.related.options().link.field) {
-        let props = this.player_.related.options().link.field.split('.');
+    const link = this.player_.related.options().link;
+
+    if (link) {
+      if (link.field) {
+        let props = link.field.split('.');
 
         if (this.item_[props[0]] && this.item_[props[0]][props[1]]) {
           window.location.href = this.item_[props[0]][props[1]];
@@ -54,6 +56,10 @@ class RelatedItem extends ClickableComponent {
         }
       }
       // Handle URL pattern with macros
+      if (link.url) {
+        window.location.href = replaceUrlMacros(link.url, this.item_);
+        return;
+      }
     }
 
     // Load video into existing player

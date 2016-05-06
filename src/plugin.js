@@ -1,6 +1,7 @@
 import videojs from 'video.js';
 import RelatedModal from './related-modal';
 import mapiRelatedVideos from './mapi-related-videos.js';
+import replaceUrlMacros from './replace-url-macros.js';
 import 'whatwg-fetch';
 import 'es6-promise';
 
@@ -73,34 +74,11 @@ const onPlayerReady = (player, options) => {
       break;
     case 'url':
       if (options.url) {
-        let url = options.url;
-        let params = {
-          '{limit}': options.limit,
-          '{player.id}': player.id(),
-          '{player.duration}': player.duration(),
-          '{timestamp}': new Date().getTime(),
-          '{document.referrer}': document.referrer,
-          '{window.location.href}': window.location.href
-        };
-
-        if (player.mediainfo) {
-          const tags = player.mediainfo.tags || [];
-          const customFields = player.mediainfo.custom_fields || {};
-
-          for (let param in player.mediainfo) {
-            if ((typeof player.mediainfo[param] === 'string') ||
-                (typeof player.mediainfo[param] === 'number')) {
-              params[`{mediainfo.${param}}`] = player.mediainfo[param];
-            }
-          }
-          params['{mediainfo.tags}'] = tags.join();
-          for (let param in customFields) {
-            params[`{mediainfo.custom_fields.${param}}`] = customFields[param];
-          }
-        }
-        for (let param in params) {
-          url = url.replace(param, params[param]);
-        }
+        const url = replaceUrlMacros(options.url, player.mediainfo, {
+          'limit': options.limit,
+          'player.id': player.id(),
+          'player.duration': player.duration()
+        });
 
         fetch(url).then((response) => {
           return response.json();
@@ -112,8 +90,18 @@ const onPlayerReady = (player, options) => {
       }
       break;
     case 'playlist':
-      if (options.playlistId) {
-        player.getPlaylist(options.playlistId, (error, data) => {
+      let playlistId = options.playlistId;
+
+      if (options.playlistField && player.mediainfo) {
+        let idFromField = options.playlistField.split('.')
+          .reduce((o, i)=>o[i], player.mediainfo);
+
+        if (idFromField) {
+          playlistId = idFromField;
+        }
+      }
+      if (playlistId) {
+        player.getPlaylist(playlistId, (error, data) => {
           if (error) {
             videojs.log.warn(error);
           } else {
