@@ -66,7 +66,7 @@ class RelatedModal extends ModalDialog {
    * @return {String}
    */
   buildCSSClass() {
-    return `vjs-related related-wall ${super.buildCSSClass()}`;
+    return `vjs-related ${super.buildCSSClass()}`;
   }
 
 }
