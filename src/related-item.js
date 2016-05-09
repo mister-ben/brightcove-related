@@ -18,7 +18,6 @@ class RelatedItem extends ClickableComponent {
 
     super(player);
     this.item_ = item;
-    this.el_.style.backgroundImage = `url(${item.poster})`;
     this.$('.video-name').textContent = this.item_.name || this.localize('Untitled');
     if (this.item_.description &&
       (this.item_.description !== '') &&
@@ -26,6 +25,20 @@ class RelatedItem extends ClickableComponent {
       this.$('.video-description').textContent = this.item_.description;
     } else {
       videojs.addClass(this.$('.video-description'), 'vjs-hidden');
+    }
+
+    // Media API results may not include an HTTPS poster image
+    if (window.location.protocol === 'https:' &&
+        this.item_.poster.substr(0, 6) !== 'https:') {
+      player.catalog.getVideo(this.item_.id, (error, video) => {
+        if (error && player.related.options().debug) {
+          videojs.warn('Failed to get video');
+        }
+        this.el_.style.backgroundImage = `url(${video.poster})`;
+        this.mediaAPI = false;
+      });
+    } else {
+      this.el_.style.backgroundImage = `url(${item.poster})`;
     }
   }
 
@@ -79,16 +92,19 @@ class RelatedItem extends ClickableComponent {
     this.player_.one('loadstart', function() {
       this.play();
     });
-    // Fetch from playlist API if there are no sources to play
-    this.player_.catalog.getVideo(this.item_.id, (error, video) => {
-      if (error) {
-        videojs.log.warn(error);
-      }
-      if (video) {
-        this.player_.catalog.load(video);
-      }
-    });
-    return;
+    // Fetch from playlist API if not known to be from that source
+    if (!this.item_.playbackAPI) {
+      this.player_.catalog.getVideo(this.item_.id, (error, video) => {
+        if (error) {
+          videojs.log.warn(error);
+        }
+        if (video) {
+          this.player_.catalog.load(video);
+        }
+      });
+      return;
+    }
+    this.player_.catalog.load(this.item_);
   }
 }
 

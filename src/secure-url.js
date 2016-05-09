@@ -13,7 +13,8 @@ const secureUrl = (url) => {
     'http://c.brightcove.com': 'https://secure.brightcove.com',
     'http://brightcove04.brightcove.com': 'https://bcsecure04-a.akamaihd.net',
     'http://brightcove01.brightcove.com': 'https://bcsecure01-a.akamaihd.net',
-    'http://brightcove.vo.llnwd.net': 'https://brightcove.hs.llnwd.net'
+    'http://brightcove.vo.llnwd.net/v1/': 'https://brightcove.hs.llnwd.net/v2/',
+    'http://brightcove.vo.llnwd.net/': 'https://brightcove.hs.llnwd.net/'
   };
 
   if (url && startsWith(url, 'http://')) {

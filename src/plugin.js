@@ -106,6 +106,9 @@ const onPlayerReady = (player, options) => {
           if (error && options.debug) {
             videojs.log.warn(error);
           } else {
+            for (let item in data) {
+              data[item].playbackAPI = true;
+            }
             modal.fill(data);
           }
         });

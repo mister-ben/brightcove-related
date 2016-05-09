@@ -49,7 +49,9 @@ const getVideo = function(mapiVideo) {
     economics: 'economics',
     length: 'duration'
   };
-  let video = {};
+  let video = {
+    mediaAPI: true
+  };
 
   for (let prop in propsMap) {
     if (mapiVideo[prop]) {

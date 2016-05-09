@@ -59,20 +59,20 @@ $two-thirds: (100% / 3) * 2;
 
 /* Safari, Chrome and Opera > 12.1 */
 @-webkit-keyframes fadeout {
-    from { opacity: 1; }
-    to   { opacity: 0; }
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
 
 /* Internet Explorer */
 @-ms-keyframes fadeout {
-    from { opacity: 1; }
-    to   { opacity: 0; }
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
 
 /* Opera < 12.1 */
 @-o-keyframes fadeout {
-    from { opacity: 1; }
-    to   { opacity: 0; }
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
 
 .vjs-related {
@@ -150,12 +150,12 @@ $two-thirds: (100% / 3) * 2;
       &:nth-child(3),
       &:nth-child(5),
       &:nth-child(7) {
-        left: $two-thirds
+        left: $two-thirds;
       }
 
       &:nth-child(4),
       &:nth-child(5) {
-        top: $one-third
+        top: $one-third;
       }
 
       &:nth-child(6),
@@ -171,6 +171,13 @@ $two-thirds: (100% / 3) * 2;
   }
 
   &.related-small {
+
+    .vjs-poster {
+      height: $half;
+      top: 0;
+      width: $half;
+    }
+
     li {
       height: $half;
       width: $half;
@@ -179,16 +186,16 @@ $two-thirds: (100% / 3) * 2;
       &:nth-child(3) {
         left: $half;
       }
-      
+
       &:nth-child(2),
       &:nth-child(3) {
         bottom: 0;
       }
-      
+
       &:nth-child(2) {
         left: 0;
       }
-      
+
       &:nth-child(n+4) {
         display: none;
       }
@@ -196,16 +203,20 @@ $two-thirds: (100% / 3) * 2;
   }
 
   .vjs-poster {
+    @include text();
     background-position: initial;
     background-size: cover;
     cursor: pointer;
-    display: block;
     height: $one-third;
     position: absolute;
     top: $one-third;
     transition: box-shadow .5s;
     width: $one-third;
-    @include text();
+
+    // Extra specificity needed for Graphite skin :/
+    &.vjs-poster {
+      display: block;
+    }
 
     &::before {
       font-size: 200%;
@@ -223,10 +234,5 @@ $two-thirds: (100% / 3) * 2;
       }
     }
   }
-  
-  &.related-small .vjs-poster {
-    height: $half;
-    top: 0;
-    width: $half;
-  }
+
 }

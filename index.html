@@ -14,8 +14,8 @@
 </head>
 <body>
 
-  <video data-video-id="4885053931001"
-    data-account="906043040001"
+  <video data-video-id="ref:bbb"
+    data-account="1534342421001"
     data-player="default"
     data-embed="default"
     class="video-js"
@@ -27,16 +27,17 @@
     <li><a href="/docs/api/">Read generated docs.</a></li>
   </ul>
   <!--<script src="/node_modules/video.js/dist/video.js"></script>-->
-  <script src="//players.brightcove.net/906043040001/default_default/index.min.js"></script>
+  <script src="//players.brightcove.net/1534342421001/default_default/index.min.js"></script>
   <script src="/dist/videojs-related.js"></script>
   <script>
     (function(window, videojs) {
       var xplayer = window.player = videojs('videojs-related-player');
       xplayer.related({
-        source: 'playlist',
+        source: 'related',
         playlistField: 'custom_fields.housenum',
+        playlistId: '4364949800001',
         url: 'https://cdn.rawgit.com/mister-ben/586283d36d6ae21326ec506e9630750e/raw/023b4523c13d7efe5adecd8f23e9b64a7e2c9185/playlist.json?count={limit}&acc={mediainfo.account_id}',
-        token: '4padFp2KtFo3R8px9Gy8ugjQ1Pedl6fqsdp71_6Z9b6YOmzse5_G5g..',
+        token: 'q84HETeLrDsz9hrT-aiHL16M2gcRkqLEfbe1Enf2SOuhIkpgnXTkeg..',
         link: false
       });
     }(window, window.videojs));
