@@ -45,19 +45,32 @@ class RelatedItem extends ClickableComponent {
 
   handleClick() {
     const link = this.player_.related.options().link;
+    let targetWindow = window;
+    const inIframe = () => {
+      try {
+        return window.self !== window.top;
+      } catch (e) {
+        return true;
+      }
+    };
+
+    // An iframed player should change parent location
+    if (inIframe()) {
+      targetWindow = window.parent;
+    }
 
     if (link) {
       if (link.field) {
         let props = link.field.split('.');
 
         if (this.item_[props[0]] && this.item_[props[0]][props[1]]) {
-          window.location.href = this.item_[props[0]][props[1]];
+          targetWindow.location.href = this.item_[props[0]][props[1]];
           return;
         }
       }
       // Handle URL pattern with macros
       if (link.url) {
-        window.location.href = replaceUrlMacros(link.url, this.item_);
+        targetWindow.location.href = replaceUrlMacros(link.url, this.item_);
         return;
       }
     }
