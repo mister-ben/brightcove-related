@@ -14,7 +14,7 @@
 </head>
 <body>
 
-  <video data-video-id="ref:glasshalf"
+  <video data-video-id="4885053931001"
     data-account="906043040001"
     data-player="default"
     data-embed="default"
@@ -33,12 +33,11 @@
     (function(window, videojs) {
       var xplayer = window.player = videojs('videojs-related-player');
       xplayer.related({
-        source: 'related',
+        source: 'playlist',
+        playlistField: 'custom_fields.housenum',
         url: 'https://cdn.rawgit.com/mister-ben/586283d36d6ae21326ec506e9630750e/raw/023b4523c13d7efe5adecd8f23e9b64a7e2c9185/playlist.json?count={limit}&acc={mediainfo.account_id}',
         token: '4padFp2KtFo3R8px9Gy8ugjQ1Pedl6fqsdp71_6Z9b6YOmzse5_G5g..',
-        link: {
-          url: 'http://example.com/videos/{mediainfo.id}'
-        }
+        link: false
       });
     }(window, window.videojs));
   </script>

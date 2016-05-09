@@ -94,16 +94,16 @@ const onPlayerReady = (player, options) => {
       let playlistId = options.playlistId;
 
       if (options.playlistField && player.mediainfo) {
-        let idFromField = options.playlistField.split('.')
-          .reduce((o, i)=>o[i], player.mediainfo);
+        const field = options.playlistField.split('.');
+        const idFromField = player.mediainfo[field[0]][field[1]];
 
         if (idFromField) {
           playlistId = idFromField;
         }
       }
       if (playlistId) {
-        player.getPlaylist(playlistId, (error, data) => {
-          if (error) {
+        player.catalog.getPlaylist(playlistId, (error, data) => {
+          if (error && options.debug) {
             videojs.log.warn(error);
           } else {
             modal.fill(data);
