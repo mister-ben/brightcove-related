@@ -3,7 +3,6 @@ import RelatedModal from './related-modal';
 import mapiRelatedVideos from './mapi-related-videos.js';
 import replaceUrlMacros from './replace-url-macros.js';
 import 'whatwg-fetch';
-import 'es6-promise';
 
 // Default options for the plugin.
 const defaults = {
@@ -42,7 +41,14 @@ const onPlayerReady = (player, options) => {
   // Keep track of video id as source of truth about content change
   let currentVideoId;
 
-  // Get list of videos
+  // Get list of videos immediately if mediainfo is populated, and update
+  // on loadedmetadata
+
+  if (player.mediainfo && player.mediainfo.id) {
+    currentVideoId = player.mediainfo.id;
+    getEndscreenData();
+  }
+
   player.on('loadedmetadata', () => {
     if (player.mediainfo &&
         player.mediainfo.id &&
