@@ -1,8 +1,8 @@
 import videojs from 'video.js';
 import RelatedList from './related-list.js';
+import ReplayPoster from './replay-poster.js';
 
 const ModalDialog = videojs.getComponent('ModalDialog');
-const PosterImage = videojs.getComponent('PosterImage');
 
 /**
  * @class relatedModal
@@ -23,7 +23,7 @@ class RelatedModal extends ModalDialog {
    */
   constructor(player, options) {
     super(player, options);
-    this.replayPoster = new PosterImage(player, {});
+    this.replayPoster = new ReplayPoster(player, {});
     this.relatedList = new RelatedList(player, {});
     this.replayPoster.addClass('vjs-icon-replay');
     this.contentEl_.appendChild(this.relatedList.el());
