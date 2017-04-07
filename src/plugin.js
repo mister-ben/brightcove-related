@@ -157,14 +157,14 @@ const onPlayerReady = (player, options) => {
  *              - If false, unset or link discovery fails, load video in player.
  * @param    {String} options.link.field
  *              - If set, use this video field to specify link.
- *                Could be `link.url` or `custom_fields.my_field`
+ *                Could be `link.url` or `customFields.myfield`
  * @param    {String} options.link.pattern
  *              - NOT IMPLEMENTED - URL pattern with macros
  * @param    {String} options.playlistId
  *              - playlist id to be used if options.source === related
  * @param    {String} options.url
  *              - url to be used if options.source === related
- *              - supports macros, e.g. {mediainfo.id}, {mediainfo.custom_fields.my_field}
+ *              - supports macros, e.g. {mediainfo.id}, {mediainfo.customFields.myfield}
  *              - must return an array of objects in the form of the playback API
  */
 const related = function(options) {

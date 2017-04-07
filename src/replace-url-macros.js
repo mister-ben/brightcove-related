@@ -11,7 +11,7 @@ const replaceUrlMacros = (url, mediainfo, customProps = {}) => {
 
   if (mediainfo) {
     const tags = mediainfo.tags || [];
-    const customFields = mediainfo.custom_fields || {};
+    const customFields = mediainfo.customFields || mediainfo.custom_fields || {};
 
     for (let param in mediainfo) {
       if ((typeof mediainfo[param] === 'string') ||
@@ -21,7 +21,7 @@ const replaceUrlMacros = (url, mediainfo, customProps = {}) => {
     }
     params['{mediainfo.tags}'] = tags.join();
     for (let param in customFields) {
-      params[`{mediainfo.custom_fields.${param}}`] = customFields[param];
+      params[`{customFields.${param}}`] = customFields[param];
     }
   }
   for (let param in params) {
