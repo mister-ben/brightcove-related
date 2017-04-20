@@ -1,79 +1,111 @@
 # videojs-related
 
-End screen for related videos
+End screen for the Brightcove Player
 
-## Table of Contents
+## Configuration
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-## Installation
+Add the plugin to your player configuration in the Studio:
 
-- [Installation](#installation)
-- [Usage](#usage)
-  - [`<script>` Tag](#script-tag)
-  - [Browserify](#browserify)
-  - [RequireJS/AMD](#requirejsamd)
-- [License](#license)
+*   **Javascript:** URL to Javascript
+*   **Stylesheet:** URL to CSS
+*   **Name:** `related`
+*   **Options:** Example - see options below
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-## Installation
+        {
+          "source": "playlist",
+          "playlistField": "custom_fields.mycustomfield",
+          "link": {
+            "url": "http://example.com/videopage/{mediainfo.id}"
+          }
+        }
 
-```sh
-npm install --save videojs-related
-```
+### Data source
 
-The npm installation is preferred, but Bower works, too.
+#### Video Cloud Playlist
 
-```sh
-bower install  --save videojs-related
-```
+You can use a playlist as a source of related videos. This might be a smart playlist of videos with tags, or a manual playlist with curated items.
 
-## Usage
+You can specify the id of the playlist to be used as `playlistId`:
 
-To include videojs-related on your website or web application, use any of the following methods.
+    {
+      "source": "playlist",
+      "playlistId": "123456"
+    }
 
-### `<script>` Tag
+Alternatively, you can use a field on the video to specify what playlist to use:
 
-This is the simplest case. Get the script in whatever way you prefer and include the plugin _after_ you include [video.js][videojs], so that the `videojs` global is available.
+    {
+      "source": "playlist",
+      "playlistField": "custom_fields.mycustomfield"
+    }
 
-```html
-<script src="//path/to/video.min.js"></script>
-<script src="//path/to/videojs-related.min.js"></script>
-<script>
-  var player = videojs('my-video');
+If both `playlistField` and `playlistId` are used, `playlistField` takes precedence. If the field is not populated on a video, the `playlistId` is used as fallback.
 
-  player.related();
-</script>
-```
+#### Custom data URL
 
-### Browserify
+    {
+      "source": "url",
+      "url": "http://example.com/relatedvideos/{mediainfo.id}"
+    }
 
-When using with Browserify, install videojs-related via npm and `require` the plugin as you would any other module.
+Fetch an array of videos from a URL.
 
-```js
-var videojs = require('video.js');
+The URL may contain macros for video fields, such as `{mediainfo.id}` or `{mediainfo.custom_fields.myfield}`. Any [standard video field](http://docs.brightcove.com/en/video-cloud/playback-api/references/video-fields-reference.html) that is a string or a number should work, as well as `{mediainfo.tags}`, which becomes a comma separated list of the video's tags.
 
-// The actual plugin function is exported by this module, but it is also
-// attached to the `Player.prototype`; so, there is no need to assign it
-// to a variable.
-require('videojs-related');
+See below for the format of data that your URL would need to return.
 
-var player = videojs('my-video');
+#### Media API Related Videos
 
-player.related();
-```
+Use related videos from the Video Cloud Media API as the source of data. A [read token for the Media API](https://videocloud.brightcove.com/admin/api) is needed. It does not need to have URL access.
 
-### RequireJS/AMD
+    {
+      "source": "related",
+      "token": "MEDIA API READ TOKEN"
+    }
 
-When using with RequireJS (or another AMD library), get the script in whatever way you prefer and `require` the plugin as you normally would:
+**Important:** The Media API used by this option is [deprecated and will be retired by the end of 2017](https://brightcove.status.io/pages/incident/534ec4a0b79718bb73000083/579f4ae52d8d333607000250). Make sure you update to a different content source before then.
 
-```js
-require(['video.js', 'videojs-related'], function(videojs) {
-  var player = videojs('my-video');
+### Click behaviour
 
-  player.related();
-});
-```
+By default the item clicked will be loaded into the existing player. You can redirect to a new page instead, e.g. to an article page featuring that video.
+
+    {
+      "link": {
+        "field": "custom_fields.articlepage",
+        "url": "http://example.com/videopage/{mediainfo.id}"
+      }
+    }
+
+If `link.field` is specified and that field contains a value, the browser will navigate to that page. If not, the video will be loaded into thr player.
+
+To use the standard "related link" video, use `link.url`.
+
+The URL can include macros as with the custom data URL option.
+
+### Custom URL data
+
+If you are using your own URL as the source of data, it should return videos in the same format as the Playback API. The following fields are required:
+
+    [
+      {
+        "id": 1234,
+        "name": "Video name",
+        "description": "Video description",
+        "poster": "https://example.com/image.jpg",
+        "duration": 120,
+        "custom_fields": {
+          "myfield": "some value"
+        },
+        "link": {
+          "text": "Related link text",
+          "url": "http://example.com"
+        }
+      },
+      { ... }
+    ]
+
+You only need `custom_fields` and/or `link` if you intend to use them for customising the behaviour when the item is clicked, as described above.
+
 
 ## License
 

@@ -3,7 +3,7 @@ const startsWith = (string, searchString, position = 0) => {
 };
 
 /**
- * Returns the HTTPS equivalent for an HTTP Brightcove CDN URL
+ * Returns the HTTPS equivalent for a known HTTP CDN URL
  * @constructor
  * @param {String} url - HTTP URL
  * @returns {String} - Equivalent HTTPS URL
