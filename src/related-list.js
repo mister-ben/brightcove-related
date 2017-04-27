@@ -34,6 +34,11 @@ class RelatedList extends Component {
     // Add items
     if (list && list.length > 0) {
       for (let i = 0; i < list.length; i++) {
+        // Omit duplicates
+        if (list[i].id === this.player_.mediainfo.id) {
+          continue;
+        }
+
         let item = new RelatedItem(this.player_, list[i]);
 
         this.items.push(item);
