@@ -4,6 +4,9 @@ import replaceUrlMacros from './replace-url-macros.js';
 
 const ClickableComponent = videojs.getComponent('ClickableComponent');
 
+// v5/v6 compat
+const dom = videojs.dom || videojs;
+
 /**
  * @class RelatedList
  * @extends {Component}
@@ -24,7 +27,7 @@ class RelatedItem extends ClickableComponent {
       (this.item_.description !== this.item_.name)) {
       this.$('.video-description').textContent = this.item_.description;
     } else {
-      videojs.addClass(this.$('.video-description'), 'vjs-hidden');
+      dom.addClass(this.$('.video-description'), 'vjs-hidden');
     }
 
     // Media API results may not include an HTTPS poster image

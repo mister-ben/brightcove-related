@@ -6,9 +6,11 @@ import 'whatwg-fetch';
 
 // Default options for the plugin.
 const defaults = {
-  limit: 8,
+  limit: 9,
   debug: true
 };
+
+const registerPlugin = videojs.registerPlugin || videojs.plugin;
 
 /**
  * Function to invoke when the player is ready.
@@ -174,7 +176,7 @@ const related = function(options) {
 };
 
 // Register the plugin with video.js.
-videojs.plugin('related', related);
+registerPlugin('related', related);
 
 // Include the version number.
 related.VERSION = '__VERSION__';
