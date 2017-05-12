@@ -2,6 +2,21 @@
 
 End screen for the Brightcove Player
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Configuration](#configuration)
+  - [Data source](#data-source)
+    - [Video Cloud Playlist](#video-cloud-playlist)
+    - [Custom data URL](#custom-data-url)
+    - [Media API Related Videos (deprecated)](#media-api-related-videos-deprecated)
+  - [Click behaviour](#click-behaviour)
+  - [Custom URL data](#custom-url-data)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Configuration
 
 Add the plugin to your player configuration in the Studio:
@@ -48,26 +63,31 @@ If both `playlistField` and `playlistId` are used, `playlistField` takes precede
       "url": "http://example.com/relatedvideos/{mediainfo.id}"
     }
 
-Fetch an array of videos from a URL.
+Fetches an array of videos from a URL. This will need CORS if hosted separately at a different domain as the page the player is embedded.
 
 The URL may contain macros for video fields, such as `{mediainfo.id}` or `{mediainfo.custom_fields.myfield}`. Any [standard video field](http://docs.brightcove.com/en/video-cloud/playback-api/references/video-fields-reference.html) that is a string or a number should work, as well as `{mediainfo.tags}`, which becomes a comma separated list of the video's tags.
 
+{
+  "source": "url",
+  "url": "http://example.com/relatedvideos?tags={mediainfo.tags}"
+}
+
 See below for the format of data that your URL would need to return.
 
-#### Media API Related Videos
+#### Media API Related Videos (deprecated)
 
-Use related videos from the Video Cloud Media API as the source of data. A [read token for the Media API](https://videocloud.brightcove.com/admin/api) is needed. It does not need to have URL access.
+Uses related videos from the Video Cloud Media API as the source of data. A [read token for the Media API](https://videocloud.brightcove.com/admin/api) is needed. It does not need URL access.
 
     {
       "source": "related",
       "token": "MEDIA API READ TOKEN"
     }
 
-**Important:** The Media API used by this option is [deprecated and will be retired by the end of 2017](https://brightcove.status.io/pages/incident/534ec4a0b79718bb73000083/579f4ae52d8d333607000250). Make sure you update to a different content source before then.
+**Important:** The Media API used by this option is [deprecated and will unavailable after the end of 2017](https://brightcove.status.io/pages/incident/534ec4a0b79718bb73000083/579f4ae52d8d333607000250). Make sure you update to a different content source before then.
 
 ### Click behaviour
 
-By default the item clicked will be loaded into the existing player. You can redirect to a new page instead, e.g. to an article page featuring that video.
+By default when a video in the end screen is clicked on, that video will be loaded into the existing player. You may redirect to a new page instead, e.g. to the article page featuring that video.
 
     {
       "link": {
@@ -76,11 +96,11 @@ By default the item clicked will be loaded into the existing player. You can red
       }
     }
 
-If `link.field` is specified and that field contains a value, the browser will navigate to that page. If not, the video will be loaded into thr player.
+If `link.field` is specified and that field contains a value, the browser will navigate to that page. If not, the video will be loaded into the player.
 
-To use the standard "related link" video, use `link.url`.
+To use the standard "related link" field in Video Cloud, use `link.url`.
 
-The URL can include macros as with the custom data URL option.
+The URL may also include macros as with the custom data URL option.
 
 ### Custom URL data
 
