@@ -64,6 +64,8 @@ const onPlayerReady = (player, options) => {
     switch (options.source) {
     case 'related':
       if (options.token) {
+        // eslint-disable-next-line max-len
+        videojs.log.warn('The brightcove-related plugin is using a depreacted API. Switch to another source.');
         mapiRelatedVideos({
           videoid: currentVideoId,
           token: options.token,

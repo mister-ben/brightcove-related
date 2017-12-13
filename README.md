@@ -1,6 +1,6 @@
 # videojs-related
 
-End screen for the Brightcove Player
+End screen for the Brightcove Player that presents a list of content to a user to watch next. Not a recommendation engine itself.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -76,12 +76,7 @@ See below for the format of data that your URL would need to return.
 
 #### Media API Related Videos (deprecated)
 
-Uses related videos from the Video Cloud Media API as the source of data. A [read token for the Media API](https://videocloud.brightcove.com/admin/api) is needed. It does not need URL access.
-
-    {
-      "source": "related",
-      "token": "MEDIA API READ TOKEN"
-    }
+This option used the deprecated related videos API.
 
 **Important:** The Media API used by this option is [deprecated and will unavailable after the end of 2017](https://brightcove.status.io/pages/incident/534ec4a0b79718bb73000083/579f4ae52d8d333607000250). Make sure you update to a different content source before then.
 
