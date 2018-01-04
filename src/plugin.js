@@ -1,6 +1,5 @@
 import videojs from 'video.js';
 import RelatedModal from './related-modal';
-import mapiRelatedVideos from './mapi-related-videos.js';
 import replaceUrlMacros from './replace-url-macros.js';
 import 'whatwg-fetch';
 
@@ -63,25 +62,7 @@ const onPlayerReady = (player, options) => {
   getEndscreenData = () => {
     switch (options.source) {
     case 'related':
-      if (options.token) {
-        // eslint-disable-next-line max-len
-        videojs.log.warn('The brightcove-related plugin is using a depreacted API. Switch to another source.');
-        mapiRelatedVideos({
-          videoid: currentVideoId,
-          token: options.token,
-          debug: options.debug,
-          limit: options.limit,
-          japan: options.japan
-        }, (error, data) => {
-          if (error) {
-            videojs.log.warn(error);
-          } else {
-            modal.fill(data);
-          }
-        });
-      } else if (options.debug) {
-        videojs.log.warn('No token');
-      }
+      videojs.log.warn('The related videos API is unavailable.');
       break;
     case 'url':
       if (options.url) {
