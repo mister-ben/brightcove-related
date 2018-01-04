@@ -1,11 +1,9 @@
 import document from 'global/document';
+import window from 'global/window';
 import videojs from 'video.js';
 import replaceUrlMacros from './replace-url-macros.js';
 
 const ClickableComponent = videojs.getComponent('ClickableComponent');
-
-// v5/v6 compat
-const dom = videojs.dom || videojs;
 
 /**
  * @class RelatedList
@@ -27,7 +25,7 @@ class RelatedItem extends ClickableComponent {
       (this.item_.description !== this.item_.name)) {
       this.$('.video-description').textContent = this.item_.description;
     } else {
-      dom.addClass(this.$('.video-description'), 'vjs-hidden');
+      videojs.dom.addClass(this.$('.video-description'), 'vjs-hidden');
     }
 
     // Media API results may not include an HTTPS poster image
@@ -46,9 +44,9 @@ class RelatedItem extends ClickableComponent {
   }
 
   createEl() {
-    let li = document.createElement('li');
-    let name = document.createElement('cite');
-    let description = document.createElement('p');
+    const li = document.createElement('li');
+    const name = document.createElement('cite');
+    const description = document.createElement('p');
 
     li.className = 'vjs-playlist-item';
     name.className = 'video-name';
@@ -77,7 +75,7 @@ class RelatedItem extends ClickableComponent {
 
     if (link) {
       if (link.field) {
-        let props = link.field.split('.');
+        const props = link.field.split('.');
 
         if (this.item_[props[0]] && this.item_[props[0]][props[1]]) {
           targetWindow.location.href = this.item_[props[0]][props[1]];

@@ -21,24 +21,27 @@
     class="video-js"
     id="videojs-related-player"
     controls></video>
-
+  <button id="skip">To end</button>
   <ul>
     <li><a href="/test/">Run unit tests in browser.</a></li>
     <li><a href="/docs/api/">Read generated docs.</a></li>
   </ul>
   <!--<script src="/node_modules/video.js/dist/video.js"></script>-->
-  <script src="//players.brightcove.net/1534342421001/default_default/index.min.js"></script>
+  <script src="//players.brightcove.net/1534342421001/default_default/index.js"></script>
   <script src="/dist/videojs-related.js"></script>
   <script>
     (function(window, videojs) {
       var player = bc('videojs-related-player');
       player.related({
-        source: 'related',
+        source: 'playlist',
         playlistField: 'customFields.housenum',
         playlistId: '4364949800001',
         url: 'https://cdn.rawgit.com/mister-ben/586283d36d6ae21326ec506e9630750e/raw/023b4523c13d7efe5adecd8f23e9b64a7e2c9185/playlist.json?count={limit}&acc={mediainfo.account_id}',
         token: 'q84HETeLrDsz9hrT-aiHL16M2gcRkqLEfbe1Enf2SOuhIkpgnXTkeg..',
         link: false
+      });
+      document.getElementById('skip').addEventListener('click', function() {
+        player.currentTime(player.duration() - 1);
       });
     }(window, window.videojs));
   </script>

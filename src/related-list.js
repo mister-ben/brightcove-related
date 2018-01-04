@@ -39,7 +39,7 @@ class RelatedList extends Component {
           continue;
         }
 
-        let item = new RelatedItem(this.player_, list[i]);
+        const item = new RelatedItem(this.player_, list[i]);
 
         this.items.push(item);
         this.addChild(item);
