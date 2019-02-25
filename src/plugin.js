@@ -3,7 +3,6 @@ import window from 'global/window';
 import RelatedModal from './related-modal';
 import replaceUrlMacros from './replace-url-macros.js';
 import compareVersions from 'compare-versions';
-import 'whatwg-fetch';
 
 // Default options for the plugin.
 const defaults = {
@@ -67,20 +66,32 @@ const onPlayerReady = (player, options) => {
       });
     },
     url: () => {
+      const req = options.urlOptions || {};
+
+      req.json = true;
+
       if (options.url) {
-        const url = replaceUrlMacros(options.url, player.mediainfo, {
-          'limit': options.limit,
-          'player.id': player.id(),
-          'player.duration': player.duration()
-        });
-        fetch(url).then((response) => {
-          return response.json();
-        }).then((json) => {
-          modal.fill(json.videos);
-        }).catch((error) => {
-          videojs.log.warn(error);
-        });
+        req.uri = options.url;
       }
+
+      if (!req.uri) {
+        videojs.log.error('No URI for related videos');
+        return;
+      }
+
+      req.uri = replaceUrlMacros(options.url, player.mediainfo, {
+        'limit': options.limit,
+        'player.id': player.id(),
+        'player.duration': player.duration()
+      });
+
+      videojs.xhr(req, (err, resp, body) => {
+        if (err) {
+          videojs.log.warn('Error fetching related videos:', error);
+          return;
+        }
+        modal.fill(body.videos);
+      });
     },
     playlist: () => {
       let playlistId = options.playlistId;
@@ -175,6 +186,9 @@ const onPlayerReady = (player, options) => {
  *              - url to be used if options.source === related
  *              - supports macros, e.g. {mediainfo.id}, {mediainfo.customFields.myfield}
  *              - must return an array of objects in the form of the playback API
+ *              - makes a simple GET
+ * @param    {String} options.urlOptions
+ *              - object of objects to pass to xhr. Use instead of options.url
  */
 const related = function(options) {
   this.ready(() => {
