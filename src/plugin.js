@@ -1,6 +1,8 @@
 import videojs from 'video.js';
+import window from 'global/window';
 import RelatedModal from './related-modal';
 import replaceUrlMacros from './replace-url-macros.js';
+import compareVersions from 'compare-versions';
 import 'whatwg-fetch';
 
 // Default options for the plugin.
@@ -32,56 +34,55 @@ const onPlayerReady = (player, options) => {
   };
 
   // Set up modal - more customisation to do here
-  let modal = new RelatedModal(player, {
+  const modal = new RelatedModal(player, {
     label: player.localize('End card with related videos'),
     content: '',
     temporary: false,
     uncloseable: true
   });
-  let getEndscreenData;
+
   // Keep track of video id as source of truth about content change
   let currentVideoId;
 
-  // Get list of videos immediately if mediainfo is populated, and update
-  // on loadedmetadata
+  const MIN_RELATED = '6.31.0';
 
-  if (player.mediainfo && player.mediainfo.id) {
-    currentVideoId = player.mediainfo.id;
-    getEndscreenData();
-  }
+  const sources = {
+    related: () => {
+      if (!window.bc || compareVersions(window.bc.VERSION, MIN_RELATED) < 0) {
+        videojs.log.error('Player version does not support related videos API');
+        return;
+      }
+      const req = {
+        type: 'related',
+        id: player.mediainfo.id
+      }
 
-  player.on('loadedmetadata', () => {
-    if (player.mediainfo &&
-        player.mediainfo.id &&
-        currentVideoId !== player.mediainfo.id) {
-      currentVideoId = player.mediainfo.id;
-      getEndscreenData();
-    }
-  });
-
-  getEndscreenData = () => {
-    switch (options.source) {
-    case 'related':
-      videojs.log.warn('The related videos API is unavailable.');
-      break;
-    case 'url':
+      if (options.key) {
+        req.policyKey = options.key
+      }
+      player.catalog.get(req).then(data => {
+        modal.fill(data);
+      }).catch(err => {
+        videojs.log.warn(err);
+      });
+    },
+    url: () => {
       if (options.url) {
         const url = replaceUrlMacros(options.url, player.mediainfo, {
           'limit': options.limit,
           'player.id': player.id(),
           'player.duration': player.duration()
         });
-
         fetch(url).then((response) => {
           return response.json();
         }).then((json) => {
           modal.fill(json.videos);
         }).catch((error) => {
-          videojs.log(error);
+          videojs.log.warn(error);
         });
       }
-      break;
-    case 'playlist':
+    },
+    playlist: () => {
       let playlistId = options.playlistId;
 
       if (options.playlistField && player.mediainfo) {
@@ -106,8 +107,15 @@ const onPlayerReady = (player, options) => {
       } else if (options.debug) {
         videojs.log.warn('No playlist supplied');
       }
-      break;
     }
+  }
+
+  const getEndscreenData = () => {
+    if (!sources[options.source]) {
+      videojs.log.error('Unsupported type');
+      return;
+    }
+    sources[options.source]();
   };
 
   player.relatedModal = modal;
@@ -115,11 +123,29 @@ const onPlayerReady = (player, options) => {
   player.addChild(modal);
 
   // iOS fullscreen doesn't show modal
-  if (videojs.browser.IS_IOS) {
+  if (videojs.browser.IS_IOS && !player.tech_.el_.hasAttribute('playsinline')) {
     player.on('ended', () => {
       player.exitFullscreen();
     });
   }
+
+  // Get list of videos immediately if mediainfo is populated, and update
+  // on loadedmetadata
+
+  if (player.mediainfo && player.mediainfo.id) {
+    currentVideoId = player.mediainfo.id;
+    getEndscreenData();
+  }
+
+  player.on('loadedmetadata', () => {
+    if (player.mediainfo &&
+        player.mediainfo.id &&
+        currentVideoId !== player.mediainfo.id) {
+      currentVideoId = player.mediainfo.id;
+      getEndscreenData();
+    }
+  });
+
 };
 
 /**
@@ -134,12 +160,10 @@ const onPlayerReady = (player, options) => {
  * @param    {Object} options
  * @param    {String} options.source
  *              - `related` | `playlist` | `url`
- * @param    {String} [options.token]
- *              - Media API token to be used if options.source === related
- * @param    {String} [options.japan]
- *              - If true, Brightcove KK Media API endpoint is used
  * @param    {Object} options.link
  *              - If false, unset or link discovery fails, load video in player.
+ * @param    {String} options.key
+ *              - If set, use this policy key in place of the player's default
  * @param    {String} options.link.field
  *              - If set, use this video field to specify link.
  *                Could be `link.url` or `customFields.myfield`
