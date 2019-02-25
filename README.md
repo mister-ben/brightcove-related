@@ -21,20 +21,35 @@ End screen for the Brightcove Player that presents a list of content to a user t
 
 Add the plugin to your player configuration in the Studio:
 
-*   **Javascript:** URL to Javascript
-*   **Stylesheet:** URL to CSS
-*   **Name:** `related`
-*   **Options:** Example - see options below
+- **Javascript:** URL to Javascript
+- **Stylesheet:** URL to CSS
+- **Name:** `related`
+- **Options:** Example - see options below
 
-        {
-          "source": "playlist",
-          "playlistField": "custom_fields.mycustomfield",
-          "link": {
-            "url": "http://example.com/videopage/{mediainfo.id}"
-          }
+      {
+        "source": "playlist",
+        "playlistField": "custom_fields.mycustomfield",
+        "link": {
+          "url": "http://example.com/videopage/{mediainfo.id}"
         }
+      }
 
 ### Data source
+
+#### Related Videos
+
+Fetches related videos from the Playback API. Requires a [search enabled policy key](https://support.brightcove.com/overview-policy-api#Search_videos) and Brightcove Player version 6.31.0 or greater.
+
+    {
+      "source": "related"
+    }
+
+A different policy key _may_ be specified with as a `key` option, otherwise the player's standard key is used.
+
+    {
+      "source": "related",
+      "key": "abc123"
+    }
 
 #### Video Cloud Playlist
 
@@ -58,27 +73,35 @@ If both `playlistField` and `playlistId` are used, `playlistField` takes precede
 
 #### Custom data URL
 
+Fetches an array of videos from a URL. This will need CORS if hosted separately at a different domain as the page the player is embedded.
+
+For a simple, get, the URL can be specifed as a string:
+
     {
       "source": "url",
-      "url": "http://example.com/relatedvideos/{mediainfo.id}"
+      "url": "https://example.com/relatedvideos/{mediainfo.id}"
     }
 
-Fetches an array of videos from a URL. This will need CORS if hosted separately at a different domain as the page the player is embedded.
+For more advanced options to pass to [xhr](https://www.npmjs.com/package/xhr), supply an opti
+
+    {
+      "source": "url",
+      "urlOptions": {
+        "uri": "https://example.com/relatedvideos/{mediainfo.id}",
+        "headers": [
+          {"x-custom": "abc123"}
+        ]
+      }
+    }
 
 The URL may contain macros for video fields, such as `{mediainfo.id}` or `{mediainfo.custom_fields.myfield}`. Any [standard video field](http://docs.brightcove.com/en/video-cloud/playback-api/references/video-fields-reference.html) that is a string or a number should work, as well as `{mediainfo.tags}`, which becomes a comma separated list of the video's tags.
 
-{
-  "source": "url",
-  "url": "http://example.com/relatedvideos?tags={mediainfo.tags}"
-}
+    {
+      "source": "url",
+      "url": "http://example.com/relatedvideos?tags={mediainfo.tags}"
+    }
 
 See below for the format of data that your URL would need to return.
-
-#### Media API Related Videos (deprecated)
-
-This option used the deprecated related videos API.
-
-**Important:** The Media API used by this option is [deprecated and will unavailable after the end of 2017](https://brightcove.status.io/pages/incident/534ec4a0b79718bb73000083/579f4ae52d8d333607000250). Make sure you update to a different content source before then.
 
 ### Click behaviour
 
@@ -113,7 +136,7 @@ If you are using your own URL as the source of data, it should return videos in 
         },
         "link": {
           "text": "Related link text",
-          "url": "http://example.com"
+          "url": "https://example.com"
         }
       },
       { ... }
@@ -121,10 +144,8 @@ If you are using your own URL as the source of data, it should return videos in 
 
 You only need `custom_fields` and/or `link` if you intend to use them for customising the behaviour when the item is clicked, as described above.
 
-
 ## License
 
 Apache-2.0. Copyright (c) mister-ben &lt;git@misterben.me&gt;
-
 
 [videojs]: http://videojs.com/

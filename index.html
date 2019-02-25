@@ -14,30 +14,37 @@
 </head>
 <body>
 
-  <video data-video-id="ref:bbb"
+  <video data-video-id="ref:bunnyfull"
+    data-account="906043040001"
+    data-player="U5QgIineO"
+    data-embed="default"
+    class="video-js"
+    id="videojs-related-player"
+    controls></video>
+  <!-- <video data-video-id="ref:bbb"
     data-account="1534342421001"
     data-player="default"
     data-embed="default"
     class="video-js"
     id="videojs-related-player"
-    controls></video>
+    controls></video> -->
 
   <ul>
     <li><a href="/test/">Run unit tests in browser.</a></li>
     <li><a href="/docs/api/">Read generated docs.</a></li>
   </ul>
   <!--<script src="/node_modules/video.js/dist/video.js"></script>-->
-  <script src="//players.brightcove.net/1534342421001/default_default/index.min.js"></script>
+  <!-- <script src="//players.brightcove.net/1534342421001/default_default/index.min.js"></script> -->
+  <script src="//players.brightcove.net/906043040001/U5QgIineO_default/index.min.js"></script>
   <script src="/dist/videojs-related.js"></script>
   <script>
     (function(window, videojs) {
       var player = bc('videojs-related-player');
       player.related({
-        source: 'related',
+        source: 'url',
         playlistField: 'customFields.housenum',
         playlistId: '4364949800001',
-        url: 'https://cdn.rawgit.com/mister-ben/586283d36d6ae21326ec506e9630750e/raw/023b4523c13d7efe5adecd8f23e9b64a7e2c9185/playlist.json?count={limit}&acc={mediainfo.account_id}',
-        token: 'q84HETeLrDsz9hrT-aiHL16M2gcRkqLEfbe1Enf2SOuhIkpgnXTkeg..',
+        url: 'https://gistcdn.githack.com/mister-ben/586283d36d6ae21326ec506e9630750e/raw/023b4523c13d7efe5adecd8f23e9b64a7e2c9185/playlist.json?count={limit}&acc={mediainfo.account_id}',
         link: false
       });
     }(window, window.videojs));
