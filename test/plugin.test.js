@@ -38,13 +38,11 @@ QUnit.module('videojs-related', {
 });
 
 QUnit.test('registers itself with video.js', function(assert) {
-  assert.expect(1);
 
   assert.strictEqual(
-    Player.prototype.related,
-    plugin,
+    typeof Player.prototype.related,
+    'function',
     'videojs-related plugin was registered'
   );
 
-  this.player.related();
 });

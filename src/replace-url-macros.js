@@ -1,11 +1,14 @@
+import document from 'global/document';
+import window from 'global/window';
+
 const replaceUrlMacros = (url, mediainfo, customProps = {}) => {
-  let params = {
+  const params = {
     '{timestamp}': new Date().getTime(),
     '{document.referrer}': document.referrer,
     '{window.location.href}': window.location.href
   };
 
-  for (let prop in customProps) {
+  for (const prop in customProps) {
     params[`{${prop}}`] = customProps[prop];
   }
 
@@ -13,18 +16,18 @@ const replaceUrlMacros = (url, mediainfo, customProps = {}) => {
     const tags = mediainfo.tags || [];
     const customFields = mediainfo.customFields || mediainfo.custom_fields || {};
 
-    for (let param in mediainfo) {
+    for (const param in mediainfo) {
       if ((typeof mediainfo[param] === 'string') ||
           (typeof mediainfo[param] === 'number')) {
         params[`{mediainfo.${param}}`] = mediainfo[param];
       }
     }
     params['{mediainfo.tags}'] = tags.join();
-    for (let param in customFields) {
+    for (const param in customFields) {
       params[`{customFields.${param}}`] = customFields[param];
     }
   }
-  for (let param in params) {
+  for (const param in params) {
     url = url.replace(param, params[param]);
   }
   return url;

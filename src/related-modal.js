@@ -16,9 +16,9 @@ class RelatedModal extends ModalDialog {
    * @method constructor
    * @param  {Player} player
    * @param  {Object} [options]
-   * @param  {Number} [options.smallCount]
+   * @param  {number} [options.smallCount]
    *          - number of items at which the `related-small` class is added
-   * @param  {Number} [options.smallWidth]
+   * @param  {number} [options.smallWidth]
    *          - player width at which the `related-small` class is added
    */
   constructor(player, options) {
@@ -36,9 +36,9 @@ class RelatedModal extends ModalDialog {
     });
   }
 
-  fill(list) {
+  fill(list, isPlaybackAPI = false) {
     if (list) {
-      this.relatedList.update(list);
+      this.relatedList.update(list, isPlaybackAPI);
     }
   }
 
@@ -63,7 +63,7 @@ class RelatedModal extends ModalDialog {
    * Build the modal's CSS class.
    *
    * @method buildCSSClass
-   * @return {String}
+   * @return {string}
    */
   buildCSSClass() {
     return `vjs-related ${super.buildCSSClass()}`;

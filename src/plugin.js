@@ -1,15 +1,13 @@
 import videojs from 'video.js';
 import RelatedModal from './related-modal';
 import replaceUrlMacros from './replace-url-macros.js';
-import 'whatwg-fetch';
+import {version as VERSION} from '../package.json';
 
 // Default options for the plugin.
 const defaults = {
   limit: 9,
   debug: true
 };
-
-const registerPlugin = videojs.registerPlugin || videojs.plugin;
 
 /**
  * Function to invoke when the player is ready.
@@ -28,11 +26,11 @@ const onPlayerReady = (player, options) => {
     options: () => {
       return options;
     },
-    VERSION: '__VERSION__'
+    VERSION
   };
 
   // Set up modal - more customisation to do here
-  let modal = new RelatedModal(player, {
+  const modal = new RelatedModal(player, {
     label: player.localize('End card with related videos'),
     content: '',
     temporary: false,
@@ -62,7 +60,15 @@ const onPlayerReady = (player, options) => {
   getEndscreenData = () => {
     switch (options.source) {
     case 'related':
-      videojs.log.warn('The related videos API is unavailable.');
+      player.catalog.get({
+        type: 'related', id: player.mediainfo.id
+      }, (error, data) => {
+        if (error) {
+          videojs.error(error);
+          return;
+        }
+        modal.fill(data, true);
+      });
       break;
     case 'url':
       if (options.url) {
@@ -72,12 +78,19 @@ const onPlayerReady = (player, options) => {
           'player.duration': player.duration()
         });
 
-        fetch(url).then((response) => {
-          return response.json();
-        }).then((json) => {
-          modal.fill(json.videos);
-        }).catch((error) => {
-          videojs.log(error);
+        videojs.xhr({
+          url,
+          json: true
+        }, (response, error) => {
+          if (error) {
+            videojs.log(error);
+            return;
+          }
+          if (!Array.isArray(response.videos)) {
+            videojs.log('URL did not contain videos');
+            return;
+          }
+          modal.fill(response.videos);
         });
       }
       break;
@@ -97,7 +110,7 @@ const onPlayerReady = (player, options) => {
           if (error && options.debug) {
             videojs.log.warn(error);
           } else {
-            for (let item in data) {
+            for (const item in data) {
               data[item].playbackAPI = true;
             }
             modal.fill(data);
@@ -132,22 +145,22 @@ const onPlayerReady = (player, options) => {
  *
  * @function related
  * @param    {Object} options
- * @param    {String} options.source
+ * @param    {string} options.source
  *              - `related` | `playlist` | `url`
- * @param    {String} [options.token]
+ * @param    {string} [options.token]
  *              - Media API token to be used if options.source === related
- * @param    {String} [options.japan]
+ * @param    {string} [options.japan]
  *              - If true, Brightcove KK Media API endpoint is used
  * @param    {Object} options.link
  *              - If false, unset or link discovery fails, load video in player.
- * @param    {String} options.link.field
+ * @param    {string} options.link.field
  *              - If set, use this video field to specify link.
  *                Could be `link.url` or `customFields.myfield`
- * @param    {String} options.link.pattern
+ * @param    {string} options.link.pattern
  *              - NOT IMPLEMENTED - URL pattern with macros
- * @param    {String} options.playlistId
+ * @param    {string} options.playlistId
  *              - playlist id to be used if options.source === related
- * @param    {String} options.url
+ * @param    {string} options.url
  *              - url to be used if options.source === related
  *              - supports macros, e.g. {mediainfo.id}, {mediainfo.customFields.myfield}
  *              - must return an array of objects in the form of the playback API
@@ -159,9 +172,9 @@ const related = function(options) {
 };
 
 // Register the plugin with video.js.
-registerPlugin('related', related);
+videojs.registerPlugin('related', related);
 
 // Include the version number.
-related.VERSION = '__VERSION__';
+related.VERSION = VERSION;
 
 export default related;
