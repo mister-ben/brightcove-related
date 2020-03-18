@@ -23,7 +23,7 @@ class RelatedList extends Component {
     }
   }
 
-  update(list) {
+  update(list, isPlaybackAPI = false) {
 
     // Clear items
     for (let i = 0; i < this.items.length; i++) {
@@ -39,7 +39,7 @@ class RelatedList extends Component {
           continue;
         }
 
-        const item = new RelatedItem(this.player_, list[i]);
+        const item = new RelatedItem(this.player_, list[i], isPlaybackAPI);
 
         this.items.push(item);
         this.addChild(item);

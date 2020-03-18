@@ -60,7 +60,15 @@ const onPlayerReady = (player, options) => {
   getEndscreenData = () => {
     switch (options.source) {
     case 'related':
-      videojs.log.warn('The related videos API is unavailable.');
+      player.catalog.get({
+        type: 'related', id: player.mediainfo.id
+      }, (error, data) => {
+        if (error) {
+          videojs.error(error);
+          return;
+        }
+        modal.fill(data, true);
+      });
       break;
     case 'url':
       if (options.url) {

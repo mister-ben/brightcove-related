@@ -11,7 +11,7 @@ const ClickableComponent = videojs.getComponent('ClickableComponent');
  */
 class RelatedItem extends ClickableComponent {
 
-  constructor(player, item) {
+  constructor(player, item, isPlaybackAPI = false) {
 
     if (!item) {
       throw new Error('No item');
@@ -27,20 +27,9 @@ class RelatedItem extends ClickableComponent {
     } else {
       videojs.dom.addClass(this.$('.video-description'), 'vjs-hidden');
     }
+    this.isPlaybackAPI = isPlaybackAPI || item.playbackAPI;
 
-    // Media API results may not include an HTTPS poster image
-    if (window.location.protocol === 'https:' &&
-        this.item_.poster.substr(0, 6) !== 'https:') {
-      player.catalog.getVideo(this.item_.id, (error, video) => {
-        if (error && player.related.options().debug) {
-          videojs.warn('Failed to get video');
-        }
-        this.el_.style.backgroundImage = `url(${video.poster})`;
-        this.mediaAPI = false;
-      });
-    } else {
-      this.el_.style.backgroundImage = `url(${item.poster})`;
-    }
+    this.el_.style.backgroundImage = `url(${item.poster})`;
   }
 
   createEl() {
@@ -94,7 +83,7 @@ class RelatedItem extends ClickableComponent {
       this.play();
     });
     // Fetch from playlist API if not known to be from that source
-    if (!this.item_.playbackAPI) {
+    if (!this.isPlaybackAPI) {
       this.player_.catalog.getVideo(this.item_.id, (error, video) => {
         if (error) {
           videojs.log.warn(error);
