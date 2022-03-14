@@ -1,6 +1,6 @@
 {
   "name": "videojs-related",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "End screen for the Brightove Player for related videos",
   "main": "dist/videojs-related.cjs.js",
   "module": "dist/videojs-related.es.js",
