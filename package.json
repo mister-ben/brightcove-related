@@ -84,7 +84,7 @@
   "devDependencies": {
     "@babel/runtime": "^7.5.5",
     "@videojs/generator-helpers": "~1.2.0",
-    "jsdoc": "BrandonOCasey/jsdoc#feat/plugin-from-cli",
+    "jsdoc": "^3.6.10",
     "karma": "^4.0.0",
     "postcss-cli": "^6.0.0",
     "rollup": "^1.12.0",
