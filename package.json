@@ -83,7 +83,7 @@
   },
   "devDependencies": {
     "@babel/runtime": "^7.5.5",
-    "@videojs/generator-helpers": "~1.2.0",
+    "@videojs/generator-helpers": "~3.2.0",
     "jsdoc": "^3.6.10",
     "karma": "^6.4.1",
     "postcss-cli": "^6.0.0",
